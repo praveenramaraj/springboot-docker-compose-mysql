@@ -1,0 +1,841 @@
+﻿-------------------------------------------------------------------------------------------
+
+Please find the Details Below.
+-------------------------------------------------------------------------------------------
+-------------------------------------------------------------------------------------------
+I was able to to few things not as a whole in this time . Thanks for this opportunity.
+
+Task 3:Manage to get the pods deployed and with replica deployment as recreate for myswl db.
+Task 2: Manage to create a setup for nagios but failed to access from outside. 
+------------------------------------------------------------------------------------------
+
+Notes :
+Projects
+Secret yaml
+Deployment Yaml
+Service Yaml
+-
+Test Host running in AWS machine with Minikube cluster in it. 
+Public Ip of the Machine :  18.130.201.155
+Attaching the key for  machine incase to login and check. 
+
+------------------------------------------------------------------------------------------------------------
+root@ip-172-31-17-220:cd /config
+mysql-deploy.yaml  secret.yaml          springmysql-deployment-old.yaml
+mysql-svc.yaml     spring-app-svc.yaml  springmysql-deployment.yaml
+
+------------------------------------------------------------------------------------------------------------
+
+root@ip-172-31-17-220: ~root@ip-172-31-17-220:~# cd springboot-docker-compose-mysql/
+root@ip-172-31-17-220: ~/springboot-docker-compose-mysqlroot@ip-172-31-17-220:~/springboot-docker-compose-mysql# ls -l
+total 48
+-rw-r--r-- 1 root root  186 May 26 22:53 Dockerfile
+-rw-r--r-- 1 root root  602 May 26 22:53 README.md
+-rw-r--r-- 1 root root 3416 May 27 07:20 docker-compose-kube.yaml
+-rw-r--r-- 1 root root  545 May 27 07:07 docker-compose.yaml
+-rw-r--r-- 1 root root 9113 May 26 22:53 mvnw
+-rw-r--r-- 1 root root 5810 May 26 22:53 mvnw.cmd
+-rw-r--r-- 1 root root 1759 May 26 22:53 pom.xml
+drwxr-xr-x 3 root root 4096 May 26 22:53 [0m[01;34msrc[0m
+drwxr-xr-x 6 root root 4096 May 26 23:11 [01;34mtarget[0m
+
+------------------------------------------------------------------------------------------------------------
+root@ip-172-31-17-220: ~/springboot-docker-compose-mysqlroot@ip-172-31-17-220:~/springboot-docker-compose-mysql# cd ..
+root@ip-172-31-17-220: ~root@ip-172-31-17-220:~# ls -l
+total 16
+drwxr-xr-x 2 root root 4096 May 27 07:49 [0m[01;34mconfig[0m
+-rw-r--r-- 1 root root 1953 May 26 16:03 pom.xml_bkp
+drwxr-xr-x 4 root root 4096 May 27 06:54 [01;34msnap[0m
+drwxr-xr-x 6 root root 4096 May 27 07:20 [01;34mspringboot-docker-compose-mysql[0m
+
+------------------------------------------------------------------------------------------------------------
+root@ip-172-31-17-220: ~root@ip-172-31-17-220:~# dockr[Ke [Kr ps [K -a
+CONTAINER ID        IMAGE                  COMMAND                  CREATED             STATUS                    PORTS               NAMES
+5ebb86088f09        ca8f2064b0bf           "java -jar springboo…"   8 minutes ago       Up 8 minutes                                  k8s_spring-app-server_spring-app-server-d4694f9bb-rpqsk_default_3066a5c8-4fbb-4ad6-ab43-250b4b9c0dfd_0
+96add473d43e        k8s.gcr.io/pause:3.2   "/pause"                 8 minutes ago       Up 8 minutes                                  k8s_POD_spring-app-server-d4694f9bb-rpqsk_default_3066a5c8-4fbb-4ad6-ab43-250b4b9c0dfd_0
+d6b2aa57d1df        9e4a20b3bbbc           "docker-entrypoint.s…"   23 minutes ago      Up 23 minutes                                 k8s_mysql_spring-mysql-app-7cc4f8859b-rwpzl_default_701ed304-2a72-425e-8446-1520ad6f82db_0
+c28047dde12f        9e4a20b3bbbc           "docker-entrypoint.s…"   23 minutes ago      Up 23 minutes                                 k8s_mysql_spring-mysql-app-7cc4f8859b-466mj_default_5f025b60-131f-4930-ac81-9f7a99054ca1_0
+c3c6879b4de2        k8s.gcr.io/pause:3.2   "/pause"                 23 minutes ago      Up 23 minutes                                 k8s_POD_spring-mysql-app-7cc4f8859b-rwpzl_default_701ed304-2a72-425e-8446-1520ad6f82db_0
+e727edf5c58d        k8s.gcr.io/pause:3.2   "/pause"                 23 minutes ago      Up 23 minutes                                 k8s_POD_spring-mysql-app-7cc4f8859b-466mj_default_5f025b60-131f-4930-ac81-9f7a99054ca1_0
+f9e2a85aa81d        mysql:5.6              "docker-entrypoint.s…"   44 minutes ago      Up 44 minutes             3306/tcp            springbootdockercomposemysql_mysql-standalone-container_1
+0921c9ee0371        67da37a9a360           "/coredns -conf /etc…"   19 hours ago        Up 19 hours                                   k8s_coredns_coredns-66bff467f8-b9nq7_kube-system_ce9a1b45-4b0a-49de-b025-3d609f7a1bb1_2
+07736fdf8f18        67da37a9a360           "/coredns -conf /etc…"   19 hours ago        Up 19 hours                                   k8s_coredns_coredns-66bff467f8-qgz5l_kube-system_bab13f0d-f7ff-4ad7-9571-02d85f222178_2
+4d851dd03961        4689081edb10           "/storage-provisioner"   19 hours ago        Up 19 hours                                   k8s_storage-provisioner_storage-provisioner_kube-system_97b86405-c6ce-4f84-ae35-07c269410419_3
+7cc40778100d        0d40868643c6           "/usr/local/bin/kube…"   19 hours ago        Up 19 hours                                   k8s_kube-proxy_kube-proxy-vqj2v_kube-system_98aef3bb-6253-4fb0-a5a8-59b39cb0d22a_2
+facc085058f9        k8s.gcr.io/pause:3.2   "/pause"                 19 hours ago        Up 19 hours                                   k8s_POD_storage-provisioner_kube-system_97b86405-c6ce-4f84-ae35-07c269410419_2
+c46862070878        k8s.gcr.io/pause:3.2   "/pause"                 19 hours ago        Up 19 hours                                   k8s_POD_coredns-66bff467f8-qgz5l_kube-system_bab13f0d-f7ff-4ad7-9571-02d85f222178_2
+a42351abac58        k8s.gcr.io/pause:3.2   "/pause"                 19 hours ago        Up 19 hours                                   k8s_POD_coredns-66bff467f8-b9nq7_kube-system_ce9a1b45-4b0a-49de-b025-3d609f7a1bb1_2
+6806ad3292b4        k8s.gcr.io/pause:3.2   "/pause"                 19 hours ago        Up 19 hours                                   k8s_POD_kube-proxy-vqj2v_kube-system_98aef3bb-6253-4fb0-a5a8-59b39cb0d22a_2
+9c1663b60702        6ed75ad404bd           "kube-apiserver --ad…"   19 hours ago        Up 19 hours                                   k8s_kube-apiserver_kube-apiserver-ip-172-31-17-220_kube-system_4f218cb38fe522ab0166a0aac1c498e3_2
+9fd67a4e9d36        303ce5db0e90           "etcd --advertise-cl…"   19 hours ago        Up 19 hours                                   k8s_etcd_etcd-ip-172-31-17-220_kube-system_00090106ab8f37e971205f7d3f8b6620_2
+ac28dac7ea53        a3099161e137           "kube-scheduler --au…"   19 hours ago        Up 19 hours                                   k8s_kube-scheduler_kube-scheduler-ip-172-31-17-220_kube-system_155707e0c19147c8dc5e997f089c0ad1_2
+aff1092edffe        ace0a8c17ba9           "kube-controller-man…"   19 hours ago        Up 19 hours                                   k8s_kube-controller-manager_kube-controller-manager-ip-172-31-17-220_kube-system_c73812a2dedddcf064df7ae3937f7b61_2
+9d064e5e60b3        k8s.gcr.io/pause:3.2   "/pause"                 19 hours ago        Up 19 hours                                   k8s_POD_etcd-ip-172-31-17-220_kube-system_00090106ab8f37e971205f7d3f8b6620_2
+908ca034cb9d        k8s.gcr.io/pause:3.2   "/pause"                 19 hours ago        Up 19 hours                                   k8s_POD_kube-scheduler-ip-172-31-17-220_kube-system_155707e0c19147c8dc5e997f089c0ad1_2
+88170020a399        k8s.gcr.io/pause:3.2   "/pause"                 19 hours ago        Up 19 hours                                   k8s_POD_kube-controller-manager-ip-172-31-17-220_kube-system_c73812a2dedddcf064df7ae3937f7b61_2
+d520b9e78a8b        k8s.gcr.io/pause:3.2   "/pause"                 19 hours ago        Up 19 hours                                   k8s_POD_kube-apiserver-ip-172-31-17-220_kube-system_4f218cb38fe522ab0166a0aac1c498e3_2
+eb8d9bde2cd7        4689081edb10           "/storage-provisioner"   46 hours ago        Exited (2) 25 hours ago                       k8s_storage-provisioner_storage-provisioner_kube-system_97b86405-c6ce-4f84-ae35-07c269410419_2
+3687970cc1a1        67da37a9a360           "/coredns -conf /etc…"   46 hours ago        Exited (0) 25 hours ago                       k8s_coredns_coredns-66bff467f8-b9nq7_kube-system_ce9a1b45-4b0a-49de-b025-3d609f7a1bb1_1
+0e869293fbcd        67da37a9a360           "/coredns -conf /etc…"   46 hours ago        Exited (0) 25 hours ago                       k8s_coredns_coredns-66bff467f8-qgz5l_kube-system_bab13f0d-f7ff-4ad7-9571-02d85f222178_1
+57f0f7ce5189        0d40868643c6           "/usr/local/bin/kube…"   46 hours ago        Exited (2) 25 hours ago                       k8s_kube-proxy_kube-proxy-vqj2v_kube-system_98aef3bb-6253-4fb0-a5a8-59b39cb0d22a_1
+bd627230719e        k8s.gcr.io/pause:3.2   "/pause"                 46 hours ago        Exited (0) 25 hours ago                       k8s_POD_kube-proxy-vqj2v_kube-system_98aef3bb-6253-4fb0-a5a8-59b39cb0d22a_1
+5afaf70c0183        k8s.gcr.io/pause:3.2   "/pause"                 46 hours ago        Exited (0) 25 hours ago                       k8s_POD_coredns-66bff467f8-qgz5l_kube-system_bab13f0d-f7ff-4ad7-9571-02d85f222178_1
+402a743c033c        k8s.gcr.io/pause:3.2   "/pause"                 46 hours ago        Exited (0) 25 hours ago                       k8s_POD_coredns-66bff467f8-b9nq7_kube-system_ce9a1b45-4b0a-49de-b025-3d609f7a1bb1_1
+5b7508e0cc9f        k8s.gcr.io/pause:3.2   "/pause"                 46 hours ago        Exited (0) 25 hours ago                       k8s_POD_storage-provisioner_kube-system_97b86405-c6ce-4f84-ae35-07c269410419_1
+e01848d3f1b7        ace0a8c17ba9           "kube-controller-man…"   46 hours ago        Exited (2) 25 hours ago                       k8s_kube-controller-manager_kube-controller-manager-ip-172-31-17-220_kube-system_c73812a2dedddcf064df7ae3937f7b61_1
+05ee2391f2d6        6ed75ad404bd           "kube-apiserver --ad…"   46 hours ago        Exited (0) 25 hours ago                       k8s_kube-apiserver_kube-apiserver-ip-172-31-17-220_kube-system_4f218cb38fe522ab0166a0aac1c498e3_1
+d2c8c23c9a5c        303ce5db0e90           "etcd --advertise-cl…"   46 hours ago        Exited (0) 25 hours ago                       k8s_etcd_etcd-ip-172-31-17-220_kube-system_00090106ab8f37e971205f7d3f8b6620_1
+02ebcd7b1e50        a3099161e137           "kube-scheduler --au…"   46 hours ago        Exited (2) 25 hours ago                       k8s_kube-scheduler_kube-scheduler-ip-172-31-17-220_kube-system_155707e0c19147c8dc5e997f089c0ad1_1
+1e0640785e1f        k8s.gcr.io/pause:3.2   "/pause"                 46 hours ago        Exited (0) 25 hours ago                       k8s_POD_kube-scheduler-ip-172-31-17-220_kube-system_155707e0c19147c8dc5e997f089c0ad1_1
+767df5d70e29        k8s.gcr.io/pause:3.2   "/pause"                 46 hours ago        Exited (0) 25 hours ago                       k8s_POD_kube-controller-manager-ip-172-31-17-220_kube-system_c73812a2dedddcf064df7ae3937f7b61_1
+5c3818becdee        k8s.gcr.io/pause:3.2   "/pause"                 46 hours ago        Exited (0) 25 hours ago                       k8s_POD_kube-apiserver-ip-172-31-17-220_kube-system_4f218cb38fe522ab0166a0aac1c498e3_1
+e6a8baec57cd        k8s.gcr.io/pause:3.2   "/pause"                 46 hours ago        Exited (0) 25 hours ago                       k8s_POD_etcd-ip-172-31-17-220_kube-system_00090106ab8f37e971205f7d3f8b6620_1
+
+------------------------------------------------------------------------------------------------------------
+root@ip-172-31-17-220: ~root@ip-172-31-17-220:~# docker ia[Kmages
+REPOSITORY                                              TAG                 IMAGE ID            CREATED             SIZE
+springboot-docker-compose-daemon-mysql-kubernetes-app   1                   ca8f2064b0bf        9 hours ago         546MB
+mysql                                                   5.6                 9e4a20b3bbbc        6 days ago          302MB
+openjdk                                                 8                   1077d23b5882        11 days ago         510MB
+k8s.gcr.io/kube-proxy                                   v1.18.2             0d40868643c6        5 weeks ago         117MB
+k8s.gcr.io/kube-controller-manager                      v1.18.2             ace0a8c17ba9        5 weeks ago         162MB
+k8s.gcr.io/kube-scheduler                               v1.18.2             a3099161e137        5 weeks ago         95.3MB
+k8s.gcr.io/kube-apiserver                               v1.18.2             6ed75ad404bd        5 weeks ago         173MB
+k8s.gcr.io/pause                                        3.2                 80d28bedfe5d        3 months ago        683kB
+k8s.gcr.io/coredns                                      1.6.7               67da37a9a360        3 months ago        43.8MB
+k8s.gcr.io/etcd                                         3.4.3-0             303ce5db0e90        7 months ago        288MB
+gcr.io/k8s-minikube/storage-provisioner                 v1.8.1              4689081edb10        2 years ago         80.8MB
+
+------------------------------------------------------------------------------------------------------------
+
+root@ip-172-31-17-220: ~root@ip-172-31-17-220:~# kubectl version
+Client Version: version.Info{Major:"1", Minor:"18", GitVersion:"v1.18.3", GitCommit:"2e7996e3e2712684bc73f0dec0200d64eec7fe40", GitTreeState:"clean", BuildDate:"2020-05-20T12:52:00Z", GoVersion:"go1.13.9", Compiler:"gc", Platform:"linux/amd64"}
+Server Version: version.Info{Major:"1", Minor:"18", GitVersion:"v1.18.2", GitCommit:"52c56ce7a8272c798dbc29846288d7cd9fbae032", GitTreeState:"clean", BuildDate:"2020-04-16T11:48:36Z", GoVersion:"go1.13.9", Compiler:"gc", Platform:"linux/amd64"}
+
+------------------------------------------------------------------------------------------------------------
+root@ip-172-31-17-220:minikube status
+minikube
+type: Control Plane
+host: Running
+kubelet: Running
+apiserver: Running
+kubeconfig: Configured
+
+------------------------------------------------------------------------------------------------------------
+root@ip-172-31-17-220: ~root@ip-172-31-17-220:~# docker version
+Client:
+ Version:           19.03.6
+ API version:       1.40
+ Go version:        go1.12.17
+ Git commit:        369ce74a3c
+ Built:             Fri Feb 28 23:45:43 2020
+ OS/Arch:           linux/amd64
+ Experimental:      false
+
+Server:
+ Engine:
+  Version:          19.03.6
+  API version:      1.40 (minimum version 1.12)
+  Go version:       go1.12.17
+  Git commit:       369ce74a3c
+  Built:            Wed Feb 19 01:06:16 2020
+  OS/Arch:          linux/amd64
+  Experimental:     false
+ containerd:
+  Version:          1.3.3-0ubuntu1~18.04.2
+  GitCommit:        
+ runc:
+  Version:          spec: 1.0.1-dev
+  GitCommit:        
+ docker-init:
+  Version:          0.18.0
+  GitCommit:        
+root@ip-172-31-17-220: ~root@ip-172-31-17-220:~# 
+
+
+------------------------------------------------------------------------------------------------------------
+root@ip-172-31-17-220: ~root@ip-172-31-17-220:~# kubectl get pods
+NAME                                READY   STATUS    RESTARTS   AGE
+spring-app-server-d4694f9bb-rpqsk   1/1     Running   0          9m6s
+spring-mysql-app-7cc4f8859b-466mj   1/1     Running   0          24m
+spring-mysql-app-7cc4f8859b-rwpzl   1/1     Running   0          24m
+
+------------------------------------------------------------------------------------------------------------
+root@ip-172-31-17-220: ~root@ip-172-31-17-220:~# kubectl get svc
+NAME                TYPE           CLUSTER-IP       EXTERNAL-IP   PORT(S)          AGE
+kubernetes          ClusterIP      10.96.0.1        <none>        443/TCP          2d10h
+mysql-app           ClusterIP      None             <none>        3306/TCP         16h
+spring-app-server   LoadBalancer   10.104.169.169   <pending>     8080:32398/TCP   3m40s
+]0;root@ip-172-31-17-220: ~root@ip-172-31-17-220:~# 
+
+
+------------------------------------------------------------------------------------------------------------
+root@ip-172-31-17-220: ~root@ip-172-31-17-220:~# Kubectl exec -it spring-app-server-d4694f9bb-rpqsk sh
+kubectl exec [POD] [COMMAND] is DEPRECATED and will be removed in a future version. Use kubectl kubectl exec [POD] -- [COMMAND] instead.
+# 
+# ls
+bin   dev  home  lib64	mnt  proc  run	 springboot-docker-compose-mysql.jar  sys  usr
+boot  etc  lib	 media	opt  root  sbin  srv				      tmp  var
+# exit
+root@ip-172-31-17-220: ~root@ip-172-31-17-220:~# 
+
+
+------------------------------------------------------------------------------------------------------------
+root@ip-172-31-17-220: ~root@ip-172-31-17-220:~# kubectl exec -it spring-mysql-app-7cc4f8859b-466mj sh
+kubectl exec [POD] [COMMAND] is DEPRECATED and will be removed in a future version. Use kubectl kubectl exec [POD] -- [COMMAND] instead.
+# 
+# ls
+bin   dev			  entrypoint.sh  home  lib64  mnt  proc  run   srv  tmp  var
+boot  docker-entrypoint-initdb.d  etc		 lib   media  opt  root  sbin  sys  usr
+# 
+# exit
+root@ip-172-31-17-220:
+
+------------------------------------------------------------------------------------------------------------
+root@ip-172-31-17-220: ~root@ip-172-31-17-220:~# mysql -u root -p
+Enter password: 
+Welcome to the MySQL monitor.  Commands end with ; or \g.
+Your MySQL connection id is 8
+Server version: 5.7.30-0ubuntu0.18.04.1 (Ubuntu)
+
+Copyright (c) 2000, 2020, Oracle and/or its affiliates. All rights reserved.
+
+Oracle is a registered trademark of Oracle Corporation and/or its
+affiliates. Other names may be trademarks of their respective
+owners.
+
+Type 'help;' or '\h' for help. Type '\c' to clear the current input statement.
+
+mysql> showdatabase
+    ->
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'showdatabase' at line 1
+mysql> exit
+Bye
+
+------------------------------------------------------------------------------------------------------------
+
+root@ip-172-31-17-220: ~root@ip-172-31-17-220:~# mysql testadmin@localhost -p
+Enter password: 
+ERROR 1049 (42000): Unknown database 'testuser@localhost'
+
+------------------------------------------------------------------------------------------------------------
+root@ip-172-31-17-220: ~root@ip-172-31-17-220:~# kubectt get deploy spring-app-server -o yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+    deployment.kubernetes.io/revision: "1"
+    kubectl.kubernetes.io/last-applied-configuration: |
+      {"apiVersion":"apps/v1","kind":"Deployment","metadata":{"annotations":{},"labels":{"app":"spring-app-server"},"name":"spring-app-server","namespace":"default"},"spec":{"replicas":1,"selector":{"matchLabels":{"app":"spring-app-server"}},"template":{"metadata":{"labels":{"app":"spring-app-server"}},"spec":{"containers":[{"env":[{"name":"MYSQL_USER","valueFrom":{"secretKeyRef":{"key":"username","name":"mysql-user-pass"}}},{"name":"MYSQL_PASSWORD","valueFrom":{"secretKeyRef":{"key":"password","name":"mysql-user-pass"}}}],"envFrom":[{"configMapRef":{"name":"mysql-config-url"}}],"image":"springboot-docker-compose-daemon-mysql-kubernetes-app:1","imagePullPolicy":"IfNotPresent","name":"spring-app-server","ports":[{"containerPort":8084,"name":"http"}],"resources":{"limits":{"cpu":0.2,"memory":"200Mi"}}}]}}}}
+  creationTimestamp: "2020-05-27T07:43:38Z"
+  generation: 1
+  labels:
+    app: spring-app-server
+  managedFields:
+  - apiVersion: apps/v1
+    fieldsType: FieldsV1
+    fieldsV1:
+      f:metadata:
+        f:annotations:
+          .: {}
+          f:kubectl.kubernetes.io/last-applied-configuration: {}
+        f:labels:
+          .: {}
+          f:app: {}
+      f:spec:
+        f:progressDeadlineSeconds: {}
+        f:replicas: {}
+        f:revisionHistoryLimit: {}
+        f:selector:
+          f:matchLabels:
+            .: {}
+            f:app: {}
+        f:strategy:
+          f:rollingUpdate:
+            .: {}
+            f:maxSurge: {}
+            f:maxUnavailable: {}
+          f:type: {}
+        f:template:
+          f:metadata:
+            f:labels:
+              .: {}
+              f:app: {}
+          f:spec:
+            f:containers:
+              k:{"name":"spring-app-server"}:
+                .: {}
+                f:env:
+                  .: {}
+                  k:{"name":"MYSQL_PASSWORD"}:
+                    .: {}
+                    f:name: {}
+                    f:valueFrom:
+                      .: {}
+                      f:secretKeyRef:
+                        .: {}
+                        f:key: {}
+                        f:name: {}
+                  k:{"name":"MYSQL_USER"}:
+                    .: {}
+                    f:name: {}
+                    f:valueFrom:
+                      .: {}
+                      f:secretKeyRef:
+                        .: {}
+                        f:key: {}
+                        f:name: {}
+                f:envFrom: {}
+                f:image: {}
+                f:imagePullPolicy: {}
+                f:name: {}
+                f:ports:
+                  .: {}
+                  k:{"containerPort":8084,"protocol":"TCP"}:
+                    .: {}
+                    f:containerPort: {}
+                    f:name: {}
+                    f:protocol: {}
+                f:resources:
+                  .: {}
+                  f:limits:
+                    .: {}
+                    f:cpu: {}
+                    f:memory: {}
+                f:terminationMessagePath: {}
+                f:terminationMessagePolicy: {}
+            f:dnsPolicy: {}
+            f:restartPolicy: {}
+            f:schedulerName: {}
+            f:securityContext: {}
+            f:terminationGracePeriodSeconds: {}
+    manager: kubectl
+    operation: Update
+    time: "2020-05-27T07:43:38Z"
+  - apiVersion: apps/v1
+    fieldsType: FieldsV1
+    fieldsV1:
+      f:metadata:
+        f:annotations:
+          f:deployment.kubernetes.io/revision: {}
+      f:status:
+        f:availableReplicas: {}
+        f:conditions:
+          .: {}
+          k:{"type":"Available"}:
+            .: {}
+            f:lastTransitionTime: {}
+            f:lastUpdateTime: {}
+            f:message: {}
+            f:reason: {}
+            f:status: {}
+            f:type: {}
+          k:{"type":"Progressing"}:
+            .: {}
+            f:lastTransitionTime: {}
+            f:lastUpdateTime: {}
+            f:message: {}
+            f:reason: {}
+            f:status: {}
+            f:type: {}
+        f:observedGeneration: {}
+        f:readyReplicas: {}
+        f:replicas: {}
+        f:updatedReplicas: {}
+    manager: kube-controller-manager
+    operation: Update
+    time: "2020-05-27T07:43:40Z"
+  name: spring-app-server
+  namespace: default
+  resourceVersion: "329537"
+  selfLink: /apis/apps/v1/namespaces/default/deployments/spring-app-server
+  uid: 2abc44e3-546e-4836-9863-907d3a662bf0
+spec:
+  progressDeadlineSeconds: 600
+  replicas: 1
+  revisionHistoryLimit: 10
+  selector:
+    matchLabels:
+      app: spring-app-server
+  strategy:
+    rollingUpdate:
+      maxSurge: 25%
+      maxUnavailable: 25%
+    type: RollingUpdate
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        app: spring-app-server
+    spec:
+      containers:
+      - env:
+        - name: MYSQL_USER
+          valueFrom:
+            secretKeyRef:
+              key: username
+              name: mysql-user-pass
+        - name: MYSQL_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              key: password
+              name: mysql-user-pass
+        envFrom:
+        - configMapRef:
+            name: mysql-config-url
+        image: springboot-docker-compose-daemon-mysql-kubernetes-app:1
+        imagePullPolicy: IfNotPresent
+        name: spring-app-server
+        ports:
+        - containerPort: 8084
+          name: http
+          protocol: TCP
+        resources:
+          limits:
+            cpu: 200m
+            memory: 200Mi
+        terminationMessagePath: /dev/termination-log
+        terminationMessagePolicy: File
+      dnsPolicy: ClusterFirst
+      restartPolicy: Always
+      schedulerName: default-scheduler
+      securityContext: {}
+      terminationGracePeriodSeconds: 30
+status:
+  availableReplicas: 1
+  conditions:
+  - lastTransitionTime: "2020-05-27T07:43:40Z"
+    lastUpdateTime: "2020-05-27T07:43:40Z"
+    message: Deployment has minimum availability.
+    reason: MinimumReplicasAvailable
+    status: "True"
+    type: Available
+  - lastTransitionTime: "2020-05-27T07:43:38Z"
+    lastUpdateTime: "2020-05-27T07:43:40Z"
+    message: ReplicaSet "spring-app-server-d4694f9bb" has successfully progressed.
+    reason: NewReplicaSetAvailable
+    status: "True"
+    type: Progressing
+  observedGeneration: 1
+  readyReplicas: 1
+  replicas: 1
+  updatedReplicas: 1
+
+------------------------------------------------------------------------------------------------------------
+root@ip-172-31-17-220: ~root@ip-172-31-17-220:~# kubectl get deploy spring-mysql-app -o yaml 
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+    deployment.kubernetes.io/revision: "2"
+    kubectl.kubernetes.io/last-applied-configuration: |
+      {"apiVersion":"apps/v1","kind":"Deployment","metadata":{"annotations":{},"labels":{"app":"spring-mysql"},"name":"spring-mysql-app","namespace":"default"},"spec":{"replicas":2,"selector":{"matchLabels":{"app":"spring-mysql","tier":"mysql"}},"strategy":{"rollingUpdate":{"maxSurge":1,"maxUnavailable":0},"type":"RollingUpdate"},"template":{"metadata":{"labels":{"app":"spring-mysql","tier":"mysql"}},"spec":{"containers":[{"env":[{"name":"MYSQL_ROOT_PASSWORD","valueFrom":{"secretKeyRef":{"key":"password","name":"mysql-root-pass"}}},{"name":"MYSQL_USER","valueFrom":{"secretKeyRef":{"key":"username","name":"mysql-user-pass"}}},{"name":"MYSQL_PASSWORD","valueFrom":{"secretKeyRef":{"key":"password","name":"mysql-user-pass"}}}],"envFrom":[{"configMapRef":{"name":"mysql-config-url"}}],"image":"mysql:5.6","name":"mysql","ports":[{"containerPort":3306,"name":"mysql"}]}]}}}}
+  creationTimestamp: "2020-05-26T14:42:52Z"
+  generation: 4
+  labels:
+    app: spring-mysql
+  managedFields:
+  - apiVersion: apps/v1
+    fieldsType: FieldsV1
+    fieldsV1:
+      f:metadata:
+        f:annotations:
+          .: {}
+          f:kubectl.kubernetes.io/last-applied-configuration: {}
+        f:labels:
+          .: {}
+          f:app: {}
+      f:spec:
+        f:progressDeadlineSeconds: {}
+        f:replicas: {}
+        f:revisionHistoryLimit: {}
+        f:selector:
+          f:matchLabels:
+            .: {}
+            f:app: {}
+            f:tier: {}
+        f:strategy:
+          f:rollingUpdate:
+            .: {}
+            f:maxSurge: {}
+            f:maxUnavailable: {}
+          f:type: {}
+        f:template:
+          f:metadata:
+            f:labels:
+              .: {}
+              f:app: {}
+              f:tier: {}
+          f:spec:
+            f:containers:
+              k:{"name":"mysql"}:
+                .: {}
+                f:env:
+                  .: {}
+                  k:{"name":"MYSQL_PASSWORD"}:
+                    .: {}
+                    f:name: {}
+                    f:valueFrom:
+                      .: {}
+                      f:secretKeyRef:
+                        .: {}
+                        f:key: {}
+                        f:name: {}
+                  k:{"name":"MYSQL_ROOT_PASSWORD"}:
+                    .: {}
+                    f:name: {}
+                    f:valueFrom:
+                      .: {}
+                      f:secretKeyRef:
+                        .: {}
+                        f:key: {}
+                        f:name: {}
+                  k:{"name":"MYSQL_USER"}:
+                    .: {}
+                    f:name: {}
+                    f:valueFrom:
+                      .: {}
+                      f:secretKeyRef:
+                        .: {}
+                        f:key: {}
+                        f:name: {}
+                f:envFrom: {}
+                f:image: {}
+                f:imagePullPolicy: {}
+                f:name: {}
+                f:ports:
+                  .: {}
+                  k:{"containerPort":3306,"protocol":"TCP"}:
+                    .: {}
+                    f:containerPort: {}
+                    f:name: {}
+                    f:protocol: {}
+                f:resources: {}
+                f:terminationMessagePath: {}
+                f:terminationMessagePolicy: {}
+            f:dnsPolicy: {}
+            f:restartPolicy: {}
+            f:schedulerName: {}
+            f:securityContext: {}
+            f:terminationGracePeriodSeconds: {}
+    manager: kubectl
+    operation: Update
+    time: "2020-05-27T07:28:28Z"
+  - apiVersion: apps/v1
+    fieldsType: FieldsV1
+    fieldsV1:
+      f:metadata:
+        f:annotations:
+          f:deployment.kubernetes.io/revision: {}
+      f:status:
+        f:availableReplicas: {}
+        f:conditions:
+          .: {}
+          k:{"type":"Available"}:
+            .: {}
+            f:lastTransitionTime: {}
+            f:lastUpdateTime: {}
+            f:message: {}
+            f:reason: {}
+            f:status: {}
+            f:type: {}
+          k:{"type":"Progressing"}:
+            .: {}
+            f:lastTransitionTime: {}
+            f:lastUpdateTime: {}
+            f:message: {}
+            f:reason: {}
+            f:status: {}
+            f:type: {}
+        f:observedGeneration: {}
+        f:readyReplicas: {}
+        f:replicas: {}
+        f:updatedReplicas: {}
+    manager: kube-controller-manager
+    operation: Update
+    time: "2020-05-27T07:28:30Z"
+  name: spring-mysql-app
+  namespace: default
+  resourceVersion: "327522"
+  selfLink: /apis/apps/v1/namespaces/default/deployments/spring-mysql-app
+  uid: 67961c67-2649-4f56-82fe-a1be62676a9a
+spec:
+  progressDeadlineSeconds: 600
+  replicas: 2
+  revisionHistoryLimit: 10
+  selector:
+    matchLabels:
+      app: spring-mysql
+      tier: mysql
+  strategy:
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
+    type: RollingUpdate
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        app: spring-mysql
+        tier: mysql
+    spec:
+      containers:
+      - env:
+        - name: MYSQL_ROOT_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              key: password
+              name: mysql-root-pass
+        - name: MYSQL_USER
+          valueFrom:
+            secretKeyRef:
+              key: username
+              name: mysql-user-pass
+        - name: MYSQL_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              key: password
+              name: mysql-user-pass
+        envFrom:
+        - configMapRef:
+            name: mysql-config-url
+        image: mysql:5.6
+        imagePullPolicy: IfNotPresent
+        name: mysql
+        ports:
+        - containerPort: 3306
+          name: mysql
+          protocol: TCP
+        resources: {}
+        terminationMessagePath: /dev/termination-log
+        terminationMessagePolicy: File
+      dnsPolicy: ClusterFirst
+      restartPolicy: Always
+      schedulerName: default-scheduler
+      securityContext: {}
+      terminationGracePeriodSeconds: 30
+status:
+  availableReplicas: 2
+  conditions:
+  - lastTransitionTime: "2020-05-26T14:42:52Z"
+    lastUpdateTime: "2020-05-26T14:49:19Z"
+    message: ReplicaSet "spring-mysql-app-7cc4f8859b" has successfully progressed.
+    reason: NewReplicaSetAvailable
+    status: "True"
+    type: Progressing
+  - lastTransitionTime: "2020-05-27T07:28:30Z"
+    lastUpdateTime: "2020-05-27T07:28:30Z"
+    message: Deployment has minimum availability.
+    reason: MinimumReplicasAvailable
+    status: "True"
+    type: Available
+  observedGeneration: 4
+  readyReplicas: 2
+  replicas: 2
+  updatedReplicas: 2
+
+------------------------------------------------------------------------------------------------------------
+
+]0;root@ip-172-31-17-220: ~root@ip-172-31-17-220:~# kubectl get svc
+NAME                TYPE           CLUSTER-IP       EXTERNAL-IP   PORT(S)          AGE
+kubernetes          ClusterIP      10.96.0.1        <none>        443/TCP          2d10h
+mysql-app           ClusterIP      None             <none>        3306/TCP         16h
+spring-app-server   LoadBalancer   10.104.169.169   <pending>     8080:32398/TCP   7m48s
+
+
+------------------------------------------------------------------------------------------------------------
+root@ip-172-31-17-220: ~root@ip-172-31-17-220:~# kubectl get svc mysql-app -o yaml
+apiVersion: v1
+kind: Service
+metadata:
+  annotations:
+    kubectl.kubernetes.io/last-applied-configuration: |
+      {"apiVersion":"v1","kind":"Service","metadata":{"annotations":{},"labels":{"app":"spring-mysql"},"name":"mysql-app","namespace":"default"},"spec":{"clusterIP":"None","ports":[{"port":3306}],"selector":{"app":"spring-mysql","tier":"mysql"}}}
+  creationTimestamp: "2020-05-26T15:04:08Z"
+  labels:
+    app: spring-mysql
+  managedFields:
+  - apiVersion: v1
+    fieldsType: FieldsV1
+    fieldsV1:
+      f:metadata:
+        f:annotations:
+          .: {}
+          f:kubectl.kubernetes.io/last-applied-configuration: {}
+        f:labels:
+          .: {}
+          f:app: {}
+      f:spec:
+        f:clusterIP: {}
+        f:ports:
+          .: {}
+          k:{"port":3306,"protocol":"TCP"}:
+            .: {}
+            f:port: {}
+            f:protocol: {}
+            f:targetPort: {}
+        f:selector:
+          .: {}
+          f:app: {}
+          f:tier: {}
+        f:sessionAffinity: {}
+        f:type: {}
+    manager: kubectl
+    operation: Update
+    time: "2020-05-26T15:04:08Z"
+  name: mysql-app
+  namespace: default
+  resourceVersion: "197818"
+  selfLink: /api/v1/namespaces/default/services/mysql-app
+  uid: 84d97356-79d7-464a-8377-61783253eb0f
+spec:
+  clusterIP: None
+  ports:
+  - port: 3306
+    protocol: TCP
+    targetPort: 3306
+  selector:
+    app: spring-mysql
+    tier: mysql
+  sessionAffinity: None
+  type: ClusterIP
+status:
+  loadBalancer: {}
+
+------------------------------------------------------------------------------------------------------------
+root@ip-172-31-17-220: ~root@ip-172-31-17-220:~# kubectl get svc mysql-app -o yaml
+NAME                TYPE           CLUSTER-IP       EXTERNAL-IP   PORT(S)          AGE
+kubernetes          ClusterIP      10.96.0.1        <none>        443/TCP          2d10h
+mysql-app           ClusterIP      None             <none>        3306/TCP         16h
+spring-app-server   LoadBalancer   10.104.169.169   <pending>     8080:32398/TCP   8m15s
+
+------------------------------------------------------------------------------------------------------------
+]0;root@ip-172-31-17-220: ~root@ip-172-31-17-220:~# kubect get svc spring-app-server -o yaml
+apiVersion: v1
+kind: Service
+metadata:
+  annotations:
+    kubectl.kubernetes.io/last-applied-configuration: |
+      {"apiVersion":"v1","kind":"Service","metadata":{"annotations":{},"labels":{"app":"spring-app-server"},"name":"spring-app-server","namespace":"default"},"spec":{"ports":[{"name":"http","port":8080,"targetPort":8084}],"selector":{"app":"spring-app-server"},"type":"LoadBalancer"}}
+  creationTimestamp: "2020-05-27T07:49:24Z"
+  labels:
+    app: spring-app-server
+  managedFields:
+  - apiVersion: v1
+    fieldsType: FieldsV1
+    fieldsV1:
+      f:metadata:
+        f:annotations:
+          .: {}
+          f:kubectl.kubernetes.io/last-applied-configuration: {}
+        f:labels:
+          .: {}
+          f:app: {}
+      f:spec:
+        f:externalTrafficPolicy: {}
+        f:ports:
+          .: {}
+          k:{"port":8080,"protocol":"TCP"}:
+            .: {}
+            f:name: {}
+            f:port: {}
+            f:protocol: {}
+            f:targetPort: {}
+        f:selector:
+          .: {}
+          f:app: {}
+        f:sessionAffinity: {}
+        f:type: {}
+    manager: kubectl
+    operation: Update
+    time: "2020-05-27T07:49:24Z"
+  name: spring-app-server
+  namespace: default
+  resourceVersion: "330297"
+  selfLink: /api/v1/namespaces/default/services/spring-app-server
+  uid: a708232f-be98-4455-acad-ef3974cea580
+spec:
+  clusterIP: 10.104.169.169
+  externalTrafficPolicy: Cluster
+  ports:
+  - name: http
+    nodePort: 32398
+    port: 8080
+    protocol: TCP
+    targetPort: 8084
+  selector:
+    app: spring-app-server
+  sessionAffinity: None
+  type: LoadBalancer
+status:
+  loadBalancer: {}
+
+------------------------------------------------------------------------------------------------------------
+
+root@ip-172-31-17-220:~# kubectl get secret
+NAME                  TYPE                                  DATA   AGE
+default-token-5mv7k   kubernetes.io/service-account-token   3      2d11h
+mysecret              Opaque                                4      9h
+mysql-root-pass       Opaque                                1      18h
+mysql-user-pass       Opaque                                2      18h
+root@ip-172-31-17-220:~#
+root@ip-172-31-17-220:~#
+
+------------------------------------------------------------------------------------------------------------
+root@ip-172-31-17-220:~# kubectl get secret mysql-root-pass -o yaml
+apiVersion: v1
+data:
+  password: cGFzc3dvcmQ=
+kind: Secret
+metadata:
+  creationTimestamp: "2020-05-26T13:57:13Z"
+  managedFields:
+  - apiVersion: v1
+    fieldsType: FieldsV1
+    fieldsV1:
+      f:data:
+        .: {}
+        f:password: {}
+      f:type: {}
+    manager: kubectl
+    operation: Update
+    time: "2020-05-26T13:57:13Z"
+  name: mysql-root-pass
+  namespace: default
+  resourceVersion: "188906"
+  selfLink: /api/v1/namespaces/default/secrets/mysql-root-pass
+  uid: aee75069-24b5-41a2-82d2-9ff6cd2004a6
+type: Opaque
+
+------------------------------------------------------------------------------------------------------------
+
+root@ip-172-31-17-220:~# kubectl get secret mysql-user-pass -o yaml
+apiVersion: v1
+data:
+  password: cGFzc3dvcmQ=
+  username: c2E=
+kind: Secret
+metadata:
+  creationTimestamp: "2020-05-26T13:57:52Z"
+  managedFields:
+  - apiVersion: v1
+    fieldsType: FieldsV1
+    fieldsV1:
+      f:data:
+        .: {}
+        f:password: {}
+        f:username: {}
+      f:type: {}
+    manager: kubectl
+    operation: Update
+    time: "2020-05-26T13:57:52Z"
+  name: mysql-user-pass
+  namespace: default
+  resourceVersion: "188993"
+  selfLink: /api/v1/namespaces/default/secrets/mysql-user-pass
+  uid: 4ade76ce-2f5d-44a6-98fc-3093613d830b
+type: Opaque
+root@ip-172-31-17-220:~#
+
+------------------------------------------------------------------------------------------------------------
+
